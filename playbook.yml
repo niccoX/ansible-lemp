@@ -1,0 +1,108 @@
+---
+- hosts: all
+  user: root 
+  sudo: true
+  tasks:
+ 
+  - name: install misc packages
+    apt: name={{ item }} state=latest
+    with_items:
+      - git
+      - curl
+      - unzip
+      - vim
+      - fail2ban
+
+  - name: download wp-cli
+    sudo: yes
+    get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp
+
+  - name: update permissions of wp-cli to allow anyone to execute it (should be only for local install!)
+    file: path=/usr/local/bin/wp mode="0755"
+
+  - name: create directory
+    file: path=/var/www state=directory owner=root group=root mode=0755
+
+  - name: install nginx server
+    apt: pkg=nginx state=installed update_cache=true
+#    notify:
+#      - start nginx
+  
+  - name: upload file index.html file
+    copy: src=templates/index.html dest=/var/www/ mode=0644
+
+  - name: upload firewall rule file
+    copy: src=templates/00-firewall dest=/etc/network/if-up.d/
+ 
+#  handlers:
+#    - name: start nginx
+#      service: name=nginx state=started
+
+  - name: install MySQL
+    apt: name={{ item }} state=latest
+    with_items:
+      - python-mysqldb
+      - mysql-server
+      - mysql-client
+
+  - name: start MySQL
+    service: name=mysql state=started
+
+  - name: add MySQL user
+    mysql_user: name=dummy
+                host={{ item }}
+                password=dummy priv=*.*:ALL,GRANT
+#                login_user=root
+#                login_password=
+    with_items:
+      - '%'
+      - localhost
+
+  - name: create MySQL database
+    mysql_db: name={{ item }}
+              state=present
+    with_items:
+      - dummy_db
+    
+  - name: create MySQL root password
+    command: /usr/bin/openssl rand -base64 16
+    register: mysql_root_pass
+
+  - name: update MySQL root passwd
+    mysql_user: name=root host={{ item }} password={{ mysql_root_pass.stdout }}
+    with_items:
+      - "{{ ansible_hostname }}"
+      - 127.0.0.1
+      - ::1
+      - localhost
+
+  - name: copy .my.cnf file with root password credentials
+    template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600
+
+  - name: delete anonymous MySQL server user for localhost
+    mysql_user: name="" state=absent
+
+  - name: remove the MySQL test database
+    mysql_db: name=test state=absent 
+
+  - name: install php5 ppa
+    apt_repository: repo='ppa:ondrej/php5'
+
+  - name: install php packages
+    apt: name={{ item }}
+    with_items:
+      - php5
+      - php5-cli
+      - php5-fpm
+
+  - name: install composer
+    shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
+    tags: composer
+
+  - name: rename composer.phar to composer
+    shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+    tags: composer
+
+  - name: make composer executable
+    file: path=/usr/local/bin/composer mode=a+x state=file
+    tags: composer
