@@ -32,7 +32,7 @@
     copy: src=templates/index.html dest=/var/www/ mode=0644
 
   - name: upload firewall rule file
-    copy: src=templates/00-firewall dest=/etc/network/if-up.d/
+    copy: src=templates/00-firewall dest=/etc/network/if-pre-up.d/ mode=0755
  
 #  handlers:
 #    - name: start nginx

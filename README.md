@@ -14,7 +14,7 @@ $ apt-get install ansible
 
 #### Commands:
 
-Execute a run from specified hosts from the inventory file:
+Execute a run from the specified hosts of the inventory file:
 
 ```sh
 $ ansible-playbook -i hosts playbook.yml
