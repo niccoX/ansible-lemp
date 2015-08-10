@@ -52,17 +52,16 @@
     mysql_user: name=dummy
                 host={{ item }}
                 password=dummy priv=*.*:ALL,GRANT
-#                login_user=root
-#                login_password=
+    
     with_items:
       - '%'
       - localhost
 
-  - name: create MySQL database
-    mysql_db: name={{ item }}
-              state=present
-    with_items:
-      - dummy_db
+#  - name: create MySQL database
+#    mysql_db: name={{ item }}
+#              state=present
+#    with_items:
+#      - dummy_db
     
   - name: create MySQL root password
     command: /usr/bin/openssl rand -base64 16
@@ -94,6 +93,10 @@
       - php5
       - php5-cli
       - php5-fpm
+
+  - replace: dest=/etc/php5/fpm/pool.d/www.conf regexp='listen = /var/run/php5-fpm.sock' replace='listen = test'
+
+  - service: name=php5-fpm state=reloaded
 
   - name: install composer
     shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
