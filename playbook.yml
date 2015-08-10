@@ -84,6 +84,11 @@
   - name: remove the MySQL test database
     mysql_db: name=test state=absent 
 
+  - name: Ensure MySQL will listen on all ip interfaces (bind to 0.0.0.0)
+    lineinfile: dest=/etc/mysql/my.cnf regexp='bind-address\s*=\s*127\.0\.0\.1\s*' line='bind-address            = 0.0.0.0' state=present backrefs=yes
+
+  - service: name=mysql state=reloaded
+
   - name: install php5 ppa
     apt_repository: repo='ppa:ondrej/php5'
 
@@ -94,7 +99,7 @@
       - php5-cli
       - php5-fpm
 
-  - replace: dest=/etc/php5/fpm/pool.d/www.conf regexp='listen = /var/run/php5-fpm.sock' replace='listen = test'
+  - replace: dest=/etc/php5/fpm/pool.d/www.conf regexp='listen = /var/run/php5-fpm.sock' replace='listen = 127.0.0.1:9000'
 
   - service: name=php5-fpm state=reloaded
 
