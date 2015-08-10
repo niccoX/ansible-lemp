@@ -1,6 +1,6 @@
-# Ansible LAMP installation
+# Ansible LEMP installation
 
-Will deploy a LAMP server with additional misc packages and copy over templated configuration files. 
+Will deploy a LEMP server with additional misc packages and copy over templated configuration files. 
 
 ### Installation
 
