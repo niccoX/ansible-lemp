@@ -24,6 +24,10 @@
     sudo: yes
     get_url: url=http://plugins.svn.wordpress.org/wp-fail2ban/trunk/wordpress.conf dest=/etc/fail2ban/filter.d
 
+  - name: tweaks the jail.conf file
+    replace: dest=/etc/fail2ban/jail.conf regexp='bantime  = 600' replace='bantime  = 86400'
+    replace: dest=/etc/fail2ban/jail.conf regexp='findtime = 600' replace='findtime = 10800'
+    
   - service: name=fail2ban state=reloaded
  
   - name: add WordPress settings
