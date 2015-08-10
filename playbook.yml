@@ -28,10 +28,10 @@
     replace: dest=/etc/fail2ban/jail.conf regexp='bantime  = 600' replace='bantime  = 86400'
     replace: dest=/etc/fail2ban/jail.conf regexp='findtime = 600' replace='findtime = 10800'
     
-  - service: name=fail2ban state=reloaded
- 
   - name: add WordPress settings
     lineinfile: dest=/etc/fail2ban/filter.d/wordpress.conf regexp='^' line='\n[wordpress]\nenabled = true\nfilter = wordpress\nlogpath = /var/log/auth.log\nport = http,https'
+ 
+  - service: name=fail2ban state=reloaded
 
   - name: create directory
     file: path=/var/www state=directory owner=root group=root mode=0755
