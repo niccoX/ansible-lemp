@@ -33,9 +33,12 @@
 
   - name: upload firewall rule file
     copy: src=templates/00-firewall dest=/etc/network/if-pre-up.d/ mode=0755
+<<<<<<< HEAD
 
   - name: execute the firewall rule
     command: sh /etc/network/if-pre-up.d/00-firewall
+=======
+>>>>>>> f7d4af353863df59f326009bb66bf194767c0b15
  
 #  handlers:
 #    - name: start nginx
