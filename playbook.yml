@@ -87,7 +87,7 @@
   - name: remove the MySQL test database
     mysql_db: name=test state=absent 
 
-  - name: Ensure MySQL will listen on all ip interfaces (bind to 0.0.0.0)
+  - name: ensure MySQL will listen on all ip interfaces (bind to 0.0.0.0)
     lineinfile: dest=/etc/mysql/my.cnf regexp='bind-address\s*=\s*127\.0\.0\.1\s*' line='bind-address            = 0.0.0.0' state=present backrefs=yes
 
   - service: name=mysql state=reloaded
