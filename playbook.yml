@@ -20,6 +20,15 @@
   - name: update permissions of wp-cli to allow anyone to execute it (should be only for local install!)
     file: path=/usr/local/bin/wp mode="0755"
 
+  - name: download WordPress filter
+    sudo: yes
+    get_url: url=http://plugins.svn.wordpress.org/wp-fail2ban/trunk/wordpress.conf dest=/etc/fail2ban/filter.d
+
+  - service: name=fail2ban state=reloaded
+ 
+  - name: add WordPress settings
+    lineinfile: dest=/etc/fail2ban/filter.d/wordpress.conf regexp='^' line='\n[wordpress]\nenabled = true\nfilter = wordpress\nlogpath = /var/log/auth.log\nport = http,https'
+
   - name: create directory
     file: path=/var/www state=directory owner=root group=root mode=0755
 
