@@ -22,7 +22,7 @@ $ ansible-playbook -i hosts playbook.yml
 
 ### Inventory File
 
-Different ways to use credentials with the hosts inventory file
+Different ways to use credentials with the hosts inventory file:
 
 ```sh
 ansible_ssh_host
