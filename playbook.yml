@@ -29,7 +29,7 @@
   - name: add WordPress section
     lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf line='[wordpress]' create=yes
 
-  - name: add maxrety settings
+  - name: add maxretry settings
     lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^enabled = ' line='enabled = true' create=yes
 
   - name: add filter settings
