@@ -24,7 +24,7 @@
     sudo: yes
     get_url: url=http://plugins.svn.wordpress.org/wp-fail2ban/trunk/wordpress.conf dest=/etc/fail2ban/filter.d
 
-  - replace: dest=/etc/fail2ban/jail.conf regexp='ignoreip = 127.0.0.1/8' replace='ignoreip = 127.0.0.1/8 83.241.140.40 mail.idkommunikation.com'
+  - replace: dest=/etc/fail2ban/jail.conf regexp='ignoreip = 127.0.0.1/8$' replace='ignoreip = 127.0.0.1/8 83.241.140.40 mail.idkommunikation.com'
 
   - name: add WordPress section
     lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf line='[wordpress]' create=yes
