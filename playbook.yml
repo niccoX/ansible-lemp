@@ -67,10 +67,6 @@
   - name: execute the firewall rule
     command: sh /etc/network/if-pre-up.d/00-firewall
  
-#  handlers:
-#    - name: start nginx
-#      service: name=nginx state=started
-
   - name: install MySQL
     apt: name={{ item }} state=latest
     with_items:
