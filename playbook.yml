@@ -5,7 +5,7 @@
   tasks:
  
   - name: install misc packages
-    apt: name={{ item }} state=latest
+    apt: name={{ item }} state=latest update_cache=true
     with_items:
       - git
       - curl
@@ -24,22 +24,37 @@
     sudo: yes
     get_url: url=http://plugins.svn.wordpress.org/wp-fail2ban/trunk/wordpress.conf dest=/etc/fail2ban/filter.d
 
-  - name: tweaks the jail.conf file
-    replace: dest=/etc/fail2ban/jail.conf regexp='bantime  = 600' replace='bantime  = 86400'
-    replace: dest=/etc/fail2ban/jail.conf regexp='findtime = 600' replace='findtime = 10800'
-    
-  - name: add WordPress settings
-    lineinfile: dest=/etc/fail2ban/filter.d/wordpress.conf regexp='^' line='\n[wordpress]\nenabled = true\nfilter = wordpress\nlogpath = /var/log/auth.log\nport = http,https'
+  - name: add WordPress section
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf line='[wordpress]' create=yes
+
+  - name: add maxrety settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^enabled = ' line='enabled = true' create=yes
+
+  - name: add findtime settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^filter = ' line='filter = wordpress' create=yes
+
+  - name: add bantime settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^logpath = ' line='logpath = /var/log/auth.log' create=yes
  
+  - name: add port settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^port = ' line='port = http,https' create=yes
+
+  - name: add maxretry settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^maxretry = ' line='maxretry = 3' create=yes
+
+  - name: add findtime settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^findtime = ' line='findtime = 10800' create=yes
+
+  - name: add bantime settings
+    lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^bantime = ' line='bantime = 86400' create=yes
+
   - service: name=fail2ban state=reloaded
 
   - name: create directory
     file: path=/var/www state=directory owner=root group=root mode=0755
 
   - name: install nginx server
-    apt: pkg=nginx state=installed update_cache=true
-#    notify:
-#      - start nginx
+    apt: pkg=nginx state=installed
   
   - name: upload file index.html file
     copy: src=templates/index.html dest=/var/www/ mode=0644
@@ -61,23 +76,23 @@
       - mysql-server
       - mysql-client
 
-  - name: start MySQL
-    service: name=mysql state=started
+#  - name: start MySQL
+#    service: name=mysql state=started
 
-  - name: add MySQL user
-    mysql_user: name=dummy
-                host={{ item }}
-                password=dummy priv=*.*:ALL,GRANT
+#  - name: add MySQL user
+#    mysql_user: name=dummy
+#                host={{ item }}
+#                password=dummy priv=*.*:ALL,GRANT
     
-    with_items:
-      - '%'
-      - localhost
-
-#  - name: create MySQL database
-#    mysql_db: name={{ item }}
-#              state=present
 #    with_items:
-#      - dummy_db
+#      - '%'
+#      - localhost
+
+  - name: create MySQL database
+    mysql_db: name={{ item }}
+              state=present
+    with_items:
+      - dummy_db
     
   - name: create MySQL root password
     command: /usr/bin/openssl rand -base64 16
