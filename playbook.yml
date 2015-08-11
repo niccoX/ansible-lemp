@@ -35,7 +35,7 @@
   - name: add filter settings
     lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^filter = ' line='filter = wordpress' create=yes
 
-  - name: add bantime settings
+  - name: add logpath settings
     lineinfile: dest=/etc/fail2ban/jail.d/wordpress.conf regexp='^logpath = ' line='logpath = /var/log/auth.log' create=yes
  
   - name: add port settings
