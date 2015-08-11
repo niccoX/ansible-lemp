@@ -68,7 +68,7 @@
     command: sh /etc/network/if-pre-up.d/00-firewall
  
   - name: install MySQL
-    apt: name={{ item }} state=latest
+    apt: name={{ item }} state=installed
     with_items:
       - python-mysqldb
       - mysql-server
