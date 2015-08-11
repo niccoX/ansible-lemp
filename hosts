@@ -1,3 +1,4 @@
-#hosts
-#52.18.239.85   ansible_ssh_user=ubuntu   ansible_ssh_private_key_file=/home/anonx/Downloads/puppet.pem
-52.19.6.196    ansible_ssh_user=ubuntu   ansible_ssh_private_key_file=/home/anonx/Downloads/puppet.pem
+#[apache]
+# dummy.server.com    ansible_ssh_user=root    ansible_ssh_pass=password
+# 52.19.80.131    ansible_ssh_user=ubuntu   ansible_ssh_private_key_file=/home/anonx/Downloads/puppet.pem
+

@@ -90,11 +90,11 @@
 #      - '%'
 #      - localhost
 
-  - name: create MySQL database
-    mysql_db: name={{ item }}
-              state=present
-    with_items:
-      - dummy_db
+#  - name: create MySQL database
+#    mysql_db: name={{ item }}
+#              state=present
+#    with_items:
+#      - dummy_db
     
   - name: create MySQL root password
     command: /usr/bin/openssl rand -base64 16
